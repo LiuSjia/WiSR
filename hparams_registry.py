@@ -24,13 +24,6 @@ def _hparams(algorithm, dataset, random_state):
     hparams["freeze_bn"] = (True, True)
     hparams["pretrained"] = (True, True)  # only for ResNet
 
-
-    hparams['sd_reg'] = (0.1, 10 ** random_state.uniform(-5, -1))
-    hparams["sag_w_adv"] = (0.1, 10 ** random_state.uniform(-2, 1))
-    
-
-    
-
     hparams["w_adv"] = (0.1, 10 ** random_state.uniform(-2, 1))
 
     return hparams

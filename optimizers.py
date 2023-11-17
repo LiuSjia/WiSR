@@ -12,7 +12,7 @@ def get_optimizer(hparams, params):
             params,
             lr=hparams["lr"],
             weight_decay=hparams["weight_decay"],
-            betas=(hparams["adam_beta1"], hparams["adam_beta2"])#beta对前后没有影响
+            betas=(hparams["adam_beta1"], hparams["adam_beta2"])
         )
     elif name == "amsgrad":
         optimizer =torch.optim.Adam(

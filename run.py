@@ -84,7 +84,6 @@ def main(args,left_argv):
     timestamp = misc.timestamp()
     args.unique_name = f"{timestamp}_{args.output_dir}"
 
-    # Different to DomainBed, we support CUDA only.
     assert torch.cuda.is_available(), "CUDA is not available"
     
     # seed
