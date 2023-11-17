@@ -69,17 +69,12 @@ def get_widar_csi(root_dir,domain_name):#room_1_user_3_loc_2_ori_3
                                 mat_file_name='room_'+room+'_user_'+user+'_ges_'+ges+'_loc_'+loc+'_ori_'+ori+'_rx_'+rx+'_csi.mat'
                                 mat_file=root_dir+'matfile/'+mat_file_name
                                 #room_1_user_1_ges_Clap_loc_1_ori_1_rx_1_csi.mat
-                                #如果存在该mat文件
                                 if os.path.isfile(mat_file):
                                     mat= scio.loadmat(mat_file)
                                     print('处理：',mat_file)
                                     mat_datas=list(mat.values())[-1][0] 
                                     for csi_data in mat_datas:
-                                        #去掉小于1000的csi
-                                        #if csi_data.shape[-1]<1000:
-                                            #break
-                                        #挨个处理CSI序列，进行相位校准、滤波、插值、重新采样等操作
-                                        amp,pha=deal_CSI(csi_data,IFfilter=True, IFphasani=True,padding_length=2500)#输入形状应该为（3,30,T）
+                                        amp,pha=deal_CSI(csi_data,IFfilter=True, IFphasani=True,padding_length=2500)
                                         all_amp.append(amp)
                                         all_pha.append(pha)
                                         all_label.append(ges_ids.index(ges))
@@ -88,15 +83,15 @@ def get_widar_csi(root_dir,domain_name):#room_1_user_3_loc_2_ori_3
         all_amp=np.array(all_amp)
         all_pha=np.array(all_pha)
         all_label=np.array(all_label)
-        #存储提取出来的振幅、相位、用户、活动信息为data_file
+
         f=open(data_file,'wb')
         pickle.dump(all_amp,f)
         pickle.dump(all_pha,f)
         pickle.dump(all_label,f)
         f.close()
-    else:#如果存在data_file，导入data_file
+    else:
         f=open(data_file,'rb')
-        print('提取:',data_file_name)
+        print('extracting:',data_file_name)
         all_amp=pickle.load(f)
         all_pha=pickle.load(f)
         all_label=pickle.load(f)
@@ -127,10 +122,10 @@ def get_CSIDA_csi(root_dir,domain_name): #room_1_user_3_loc_2
         all_csi = group.csi_data_raw[:]#(2844, 1800, 3, 114)
         all_amp = group.csi_data_amp[:]#(2844, 1800, 3, 114)
         all_pha = group.csi_data_pha[:]
-        all_gesture = group.csi_label_act[:]  # 动作 6个 0~5
-        room_label = group.csi_label_env[:]  # 房间 0,1
-        loc_label = group.csi_label_loc[:]  # 站位 0,1,2
-        user_label = group.csi_label_user[:]  # 人 0,1,2,3,4
+        all_gesture = group.csi_label_act[:]  # 0~5
+        room_label = group.csi_label_env[:]  # 0,1
+        loc_label = group.csi_label_loc[:]  # 0,1,2
+        user_label = group.csi_label_user[:]  # 0,1,2,3,4
         
         index=np.array(range(all_gesture.shape[0]))
         select=index[np.where(room_label==roomid)]
@@ -163,11 +158,11 @@ def get_CSIDA_csi(root_dir,domain_name): #room_1_user_3_loc_2
         f.close()
     else:  
         f=open(root_dir+'room_'+str(roomid)+'_loc_'+str(locid)+'_user_'+str(userid)+'_CSIDA_amp.pkl','rb')
-        print('提取:',root_dir+'room_'+str(roomid)+'_loc_'+str(locid)+'_user_'+str(userid)+'_CSIDA_amp.pkl')
+        print('extracting:',root_dir+'room_'+str(roomid)+'_loc_'+str(locid)+'_user_'+str(userid)+'_CSIDA_amp.pkl')
         all_sel_amp=pickle.load(f)
         f.close()
         f=open(root_dir+'room_'+str(roomid)+'_loc_'+str(locid)+'_user_'+str(userid)+'_CSIDA_pha.pkl','rb')
-        print('提取:',root_dir+'room_'+str(roomid)+'_loc_'+str(locid)+'_user_'+str(userid)+'_CSIDA_pha.pkl')
+        print('extracting:',root_dir+'room_'+str(roomid)+'_loc_'+str(locid)+'_user_'+str(userid)+'_CSIDA_pha.pkl')
         all_sel_pha=pickle.load(f)
         f.close()
         f=open(root_dir+'room_'+str(roomid)+'_loc_'+str(locid)+'_user_'+str(userid)+'_CSIDA_label.pkl','rb')
@@ -220,9 +215,6 @@ def get_ARIL_csi(root_dir,domain_name): #train_loc_ test_loc_
     all_pha=pha[select]
     all_label=label[select]
     
-    # for i in range(all_amp.shape[0]): #滤波反而略微降低了准确率
-        
-    #     all_amp[i,:]=butter_lowpass(all_amp[i,:], up_cutoff,up_order,down_cutoff, fs, down_order)
 
     room_id=np.array([0]*all_amp.shape[0],dtype=int)
     user_id=np.array([0]*all_amp.shape[0],dtype=int)

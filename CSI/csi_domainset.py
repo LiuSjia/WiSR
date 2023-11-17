@@ -90,7 +90,7 @@ def get_widar3_all_domains(ibegin,imax,domain_type,domain_list,rxs=None):
                         if i>=imax:
                             return domain_list
  
-    #数据量*
+    
     # widar_room_user_ids={
     #1:['1','2','3','5','10','11','12','13','14','15','16','17'], #5-17* 1/3****  2 *****
     #2:['1','2','3','6'],#1* 3** 2/6*** 
